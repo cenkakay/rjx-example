@@ -18,13 +18,28 @@ export class HomeComponent implements OnInit, OnDestroy {
       let count = 0;
       setInterval(() => {
         observer.next(count);
+        if (count === 5) {
+          observer.complete();
+        }
+        if (count > 3) {
+          observer.error(new Error("Hey, count is greater than 3!!!!"));
+        }
         count++;
       }, 1000);
     });
 
-    this.firstSubscription = customIntervalObservable.subscribe((data) => {
-      console.log(data);
-    });
+    this.firstSubscription = customIntervalObservable.subscribe(
+      (data) => {
+        console.log(data);
+      },
+      (error) => {
+        console.log(error);
+        alert(error.message);
+      },
+      () => {
+        console.log("Hey observable finished(compleated)");
+      }
+    );
   }
   ngOnDestroy() {
     this.firstSubscription.unsubscribe();
